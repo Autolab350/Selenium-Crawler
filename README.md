@@ -1,6 +1,8 @@
-# Selenium Crawler - Web Scraping & Automation
+# Universal Web Scraper - Master Key for Web Data Extraction
 
-Intelligent web scraping framework for automated data extraction from dynamic websites. Built for trading platforms like Polymarket, HexTrade, and TopStep.
+A generalized, intelligent web scraping engine that works on **ANY website**. Extract meaningful data from news articles, e-commerce sites, forums, documentation, social media, and more using browser automation, AI integration, and smart extraction.
+
+**Previous Version:** Legacy trading platform-specific scrapers (Polymarket, HexTrade, TopStep) now unified into a universal engine.
 
 ## 🚀 Quick Start
 
@@ -10,130 +12,159 @@ Intelligent web scraping framework for automated data extraction from dynamic we
 pip install -r requirements.txt
 ```
 
-### Basic Usage
+### Basic Usage - Works on ANY Website
 
 ```python
-from core.crawler import SeleniumCrawler
+from core.universal_scraper import UniversalWebScraper
 
-# Simple extraction
-with SeleniumCrawler(headless=True) as crawler:
-    markets = crawler.extract_polymarket_markets()
-    print(f"Extracted {len(markets)} markets")
+# Scrape any URL
+with UniversalWebScraper() as scraper:
+    result = scraper.scrape("https://techcrunch.com/article")
+    
+    # Automatically extract:
+    article = result["data"]["article"]        # Article title, body, author, date
+    metadata = result["data"]["metadata"]      # SEO, OG tags, keywords
+    tables = result["data"]["tables"]          # All HTML tables as DataFrames
+    links = result["data"]["links"]            # Internal, external, anchors
+    json_ld = result["data"]["json_ld"]        # Structured data
+    
+    print(f"Title: {article['title']}")
+    print(f"By: {article['author']}")
+```
+
+### Custom Extraction with CSS Selectors
+
+```python
+# Extract specific elements
+result = scraper.scrape(
+    url="https://shop.example.com/products",
+    selectors={
+        "product_names": ".product-name",
+        "prices": ".price",
+        "ratings": ".rating"
+    },
+    scroll=True  # Scroll to load lazy content
+)
+
+print(result["custom_data"]["product_names"])
 ```
 
 ## 📁 Project Structure
 
 ```
 Selenium Crawler/
-├── core/                           # Core modules
+├── core/
 │   ├── __init__.py
-│   ├── crawler.py                  # Main orchestration engine
-│   ├── browser_config.py           # Selenium setup & control
-│   ├── auth_manager.py             # Login & session handling
-│   ├── rate_limiter.py             # Request throttling
-│   ├── smart_cache.py              # Intelligent caching (TTL-based)
-│   └── data_parser.py              # HTML parsing & extraction
+│   ├── universal_scraper.py        # ⭐ Universal scraper engine
+│   └── crawler_engine.py           # Legacy: trading platform support
 │
-├── examples/                       # Usage examples
-│   ├── basic_extraction.py         # Simple market data extraction
-│   └── platform_integration.py     # Platform-specific integration
+├── examples/
+│   ├── universal_examples.py       # Examples for all website types
+│   └── basic_extraction.py         # Legacy examples
 │
-├── platforms/                      # Platform-specific configs
-│   ├── polymarket/                 # Polymarket guides
-│   ├── hextrade/                   # HexTrade automation
-│   │   └── HEXTRADE_EXAMPLE.txt
-│   └── topstep/                    # TopStep trading automation
-│       ├── TOPSTEP_AUTOMATION.txt
-│       └── TOPSTEP_SIMPLE.txt
+├── docs/
+│   ├── UNIVERSAL_SCRAPER.md        # ⭐ Full documentation
+│   ├── PROJECT_GUIDE.txt           # Technical details
+│   ├── API_reference.md            # API docs
+│   └── INSTALL.txt                 # Installation guide
 │
-├── docs/                           # Documentation
-│   ├── PROJECT_GUIDE.txt           # Technical documentation
-│   ├── INSTALL.txt                 # Installation guide
-│   └── Log_Crawler.md              # Original markdown docs
-│
-├── url_scraper_agent/              # AI agent for market creation (separate project)
 ├── README.md                       # This file
 ├── requirements.txt                # Python dependencies
-└── archive/                        # Legacy files
+└── url_scraper_agent/              # AI-powered market creator
 ```
 
 ## 🔧 Core Features
 
+### Universal Data Extraction
+- **Article Detection** - Automatically extract article titles, bodies, authors, dates
+- **Metadata Extraction** - SEO metadata, Open Graph tags, keywords, structured data
+- **Table Parsing** - Extract all HTML tables as pandas DataFrames
+- **List Extraction** - Unordered and ordered lists
+- **JSON-LD** - Structured data (schema.org, etc.)
+- **Link Extraction** - Internal, external, anchor links
+- **Custom Selectors** - CSS selectors for targeted extraction
+
 ### Browser Automation
 - Headless Chrome with Selenium
-- JavaScript execution support
+- JavaScript execution & DOM rendering
 - Dynamic element waiting
 - Page scrolling for lazy-loaded content
-- Screenshot and source capture
+- Screenshot & source capture
 
-### Authentication
-- Automated login flows
-- Cookie persistence
-- Session management
-- Multi-platform support
+### Intelligent Features
+- **Smart Caching** - TTL-based caching, MD5 hash keys
+- **Rate Limiting** - Configurable requests/min with adaptive backoff
+- **Error Recovery** - Automatic retry with exponential backoff
+- **Session Management** - Cookie persistence, authentication
 
-### Rate Limiting
-- Configurable requests per minute
-- Automatic inter-request delays
-- Backoff strategy
-- Statistics tracking
-
-### Intelligent Caching
-- TTL-based expiration
-- MD5 hash key generation
-- Automatic cleanup
-- Cache statistics
-
-### Data Parsing
-- BeautifulSoup HTML extraction
-- JSON parsing from scripts
-- Table extraction to CSV/JSON
-- Polymarket-specific extractors
+### Export & Integration
+- JSON, CSV, DataFrame formats
+- Batch scraping of multiple URLs
+- Statistics & monitoring
+- AI-ready (compatible with OpenAI, Claude, etc.)
 
 ## 📚 Usage Examples
 
-### Example 1: Basic Market Extraction
+### Example 1: News Article Extraction
 
 ```python
-from core.crawler import SeleniumCrawler
+from core.universal_scraper import UniversalWebScraper
 
-crawler = SeleniumCrawler(use_cache=True, headless=True)
-crawler.start()
-
-# Extract markets
-markets = crawler.extract_polymarket_markets()
-
-# Save results
-crawler.save_results(markets, format="json")
-
-# Get status
-status = crawler.get_crawler_status()
-print(f"Extracted {len(markets)} markets")
-print(f"Cache enabled: {status['cache_enabled']}")
-
-crawler.stop()
+with UniversalWebScraper() as scraper:
+    result = scraper.scrape("https://techcrunch.com/article")
+    article = result["data"]["article"]
+    
+    print(article["title"])
+    print(article["word_count"])
+    print(article["estimated_read_time"])
 ```
 
-See: `examples/basic_extraction.py`
-
-### Example 2: Platform Integration
+### Example 2: E-Commerce Products
 
 ```python
-from core.crawler import SeleniumCrawler
-
-# Use context manager for automatic cleanup
-with SeleniumCrawler() as crawler:
-    # HexTrade extraction
-    data = crawler.extract_platform_data("hextrade")
+with UniversalWebScraper() as scraper:
+    result = scraper.scrape(
+        url="https://shop.example.com/products",
+        selectors={
+            "names": ".product-name",
+            "prices": ".price",
+            "ratings": ".rating"
+        },
+        scroll=True  # Load lazy content
+    )
     
-    # Multi-page navigation
-    all_data = []
-    for page in range(1, 5):
-        page_data = crawler.get_page_data(page)
-        all_data.extend(page_data)
-    
-    print(f"Extracted {len(all_data)} items across multiple pages")
+    products = result["custom_data"]
 ```
+
+### Example 3: Extract Tables
+
+```python
+with UniversalWebScraper() as scraper:
+    result = scraper.scrape("https://en.wikipedia.org/wiki/Python_(programming_language)")
+    
+    # All tables extracted as pandas DataFrames
+    for i, table in enumerate(result["data"]["tables"]):
+        print(f"Table {i}: {table.shape}")
+        print(table)
+```
+
+### Example 4: Batch Scraping
+
+```python
+urls = [
+    "https://example.com/page1",
+    "https://example.com/page2",
+    "https://example.com/page3"
+]
+
+with UniversalWebScraper(use_cache=True) as scraper:
+    results = scraper.scrape_multiple(urls)
+    
+    for result in results:
+        print(result["data"]["metadata"]["title"])
+```
+
+See full examples: `examples/universal_examples.py`
 
 See: `examples/platform_integration.py` and `platforms/hextrade/`
 
